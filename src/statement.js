@@ -35,9 +35,14 @@ function getVolumeCredits(perf, play) {
   return volumeCredits;
 }
 
-function getTotalAmount(thisAmount) {
+function getTotalAmount(invoice, plays) {
   let totalAmount = 0;
-  return totalAmount += thisAmount;
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    let thisAmount = getAmount(play, perf);
+    totalAmount += thisAmount;
+  }
+  return totalAmount;
 }
 
 function statement (invoice, plays) {
@@ -52,9 +57,8 @@ function statement (invoice, plays) {
     volumeCredits += getVolumeCredits(perf, play);
     //print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
-    totalAmount += getTotalAmount(thisAmount);
   }
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `Amount owed is ${format(getTotalAmount(invoice, plays) / 100)}\n`;
   result += `You earned ${volumeCredits} credits \n`;
   return result;
 }
