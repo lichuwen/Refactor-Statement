@@ -172,3 +172,28 @@ test('statement test6. Customer BigCo has three performance', t => {
   t.is(result, expect);
 });
 
+test('statement case 7. Customer BigCo has one unknown performance. ', t => {
+  const plays = {
+    'hamlet': {
+      'name': 'Hamlet',
+      'type': 'tragedy1',
+    },
+  };
+  const invoice = {
+    'customer': 'BigCo',
+    'performances': [
+      {
+        'playID': 'hamlet',
+        'audience': 30,
+      },
+    ],
+  };
+
+  try {
+    statement(invoice, plays);
+    t.fail();
+  }
+  catch (e) {
+    t.is(e.message, 'unknown type: tragedy1');
+  }
+});
