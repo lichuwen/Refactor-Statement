@@ -1,25 +1,6 @@
 const test = require('ava');
 const {statement,htmlStatement} = require('../src/statement');
 
-const invoice = {
-  'customer': 'BigCo',
-  'performances': [
-    {
-      'playID': 'hamlet',
-      'audience': 55,
-    },
-    {
-      'playID': 'as-like',
-      'audience': 35,
-    },
-    {
-      'playID': 'othello',
-      'audience': 40,
-    },
-  ],
-};
-
-
 const plays = {
   'hamlet': {
     'name': 'Hamlet',
@@ -35,11 +16,6 @@ const plays = {
   },
 };
 
-// test('Sample test', t => {
-//   t.true(true);
-//   t.is(1, 1);
-//   t.deepEqual({a: 1}, {a: 1});
-// });
 
 test('statement test1. Customer BigCo without performance.', t => {
   //given
