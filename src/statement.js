@@ -28,10 +28,13 @@ function UsdFormat() {
   }).format;
 }
 
-function getVolumeCredits(perf, play) {
+function getVolumeCredits(invoice, plays) {
   let volumeCredits = 0;
-  volumeCredits += Math.max(perf.audience - 30, 0);
-  if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+  }
   return volumeCredits;
 }
 
@@ -53,13 +56,11 @@ function statement (invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = getAmount(play, perf);
-    // add volume credits
-    volumeCredits += getVolumeCredits(perf, play);
     //print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
   }
   result += `Amount owed is ${format(getTotalAmount(invoice, plays) / 100)}\n`;
-  result += `You earned ${volumeCredits} credits \n`;
+  result += `You earned ${getVolumeCredits(invoice, plays)} credits \n`;
   return result;
 }
 
