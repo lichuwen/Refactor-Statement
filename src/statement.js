@@ -14,8 +14,8 @@ function getAmount(play, perf) {
       }
       thisAmount += 300 * perf.audience;
       break;
-      default:
-        throw new Error(`unknown type: ${play.type}`);
+    default:
+      throw new Error(`unknown type: ${play.type}`);
   }
   return thisAmount;
 }
@@ -35,6 +35,11 @@ function getVolumeCredits(perf, play) {
   return volumeCredits;
 }
 
+function getTotalAmount(thisAmount) {
+  let totalAmount = 0;
+  return totalAmount += thisAmount;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
@@ -47,7 +52,7 @@ function statement (invoice, plays) {
     volumeCredits += getVolumeCredits(perf, play);
     //print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
-    totalAmount += thisAmount;
+    totalAmount += getTotalAmount(thisAmount);
   }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits \n`;
