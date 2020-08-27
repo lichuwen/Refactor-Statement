@@ -1,6 +1,5 @@
 const test = require('ava');
-const {statement} = require('../src/statement');
-const {htmlStatement} = require('../src/statement');
+const {statement,htmlStatement} = require('../src/statement');
 
 const invoice = {
   'customer': 'BigCo',
