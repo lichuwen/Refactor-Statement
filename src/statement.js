@@ -20,12 +20,12 @@ function getAmount(play, perf) {
   return thisAmount;
 }
 
-function UsdFormat() {
+function UsdFormat(thisAmount) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-  }).format;
+  }).format(thisAmount / 100);
 }
 
 function getVolumeCredits(invoice, plays) {
@@ -56,14 +56,27 @@ function creatStatementData (invoice, plays) {
 
 function getTextResult (data) {
   let result = `Statement for ${data.invoice.customer}\n`;
-  const format = UsdFormat();
   for (let perf of data.invoice.performances) {
     const play = data.plays[perf.playID];
-    let thisAmount = getAmount(play, perf);
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    result += ` ${play.name}: ${UsdFormat(getAmount(play, perf))} (${perf.audience} seats)\n`;
   }
-  result += `Amount owed is ${format(data.totalAmount / 100)}\n`;
+  result += `Amount owed is ${UsdFormat(data.totalAmount)}\n`;
   result += `You earned ${data.volumeCredits} credits \n`;
+  return result;
+}
+
+function getHtmlResult (data) {
+  let result = `<h1>Statement for ${data.invoice.customer}</h1>\n`;
+  result += `<table>\n` +
+      `<tr><th>play</th><th>seats</th><th>cost</th></tr>`;
+  for (let perf of data.invoice.performances) {
+    const play = data.plays[perf.playID];
+    result += ` <tr><td>${play.name}</td><td>${perf.audience}</td><td>${UsdFormat(getAmount(play, perf))}</td></tr>\n`;
+  }
+  result += `</table>\n`;
+  result += `<p>Amount owed is <em>${UsdFormat(data.totalAmount)}</em></p>\n`;
+  result += `<p>You earned <em>${data.volumeCredits}</em> credits</p>\n`;
+
   return result;
 }
 
@@ -71,6 +84,11 @@ function statement (invoice, plays) {
   return getTextResult (creatStatementData (invoice, plays));
 }
 
+function htmlStatement (invoice, plays) {
+  return getHtmlResult (creatStatementData (invoice, plays));
+}
+
 module.exports = {
   statement,
+  htmlStatement,
 };
