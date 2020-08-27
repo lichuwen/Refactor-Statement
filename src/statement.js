@@ -48,20 +48,27 @@ function getTotalAmount(invoice, plays) {
   return totalAmount;
 }
 
-function statement (invoice, plays) {
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
+function creatStatementData (invoice, plays) {
+  let totalAmount = getTotalAmount(invoice, plays);
+  let volumeCredits = getVolumeCredits(invoice, plays);
+  return { totalAmount,volumeCredits ,invoice, plays};
+}
+
+function getTextResult (data) {
+  let result = `Statement for ${data.invoice.customer}\n`;
   const format = UsdFormat();
-  for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
+  for (let perf of data.invoice.performances) {
+    const play = data.plays[perf.playID];
     let thisAmount = getAmount(play, perf);
-    //print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
   }
-  result += `Amount owed is ${format(getTotalAmount(invoice, plays) / 100)}\n`;
-  result += `You earned ${getVolumeCredits(invoice, plays)} credits \n`;
+  result += `Amount owed is ${format(data.totalAmount / 100)}\n`;
+  result += `You earned ${data.volumeCredits} credits \n`;
   return result;
+}
+
+function statement (invoice, plays) {
+  return getTextResult (creatStatementData (invoice, plays));
 }
 
 module.exports = {
